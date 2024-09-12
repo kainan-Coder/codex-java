@@ -3,9 +3,9 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Timeout: 300
-      MemorySize: 1088
-      Handler: com.uaian.aws.lambda.processor.excel.input.ExcelInputProcessor
-      CodeUri: D:\codex-java\codex-aws
+      MemorySize: 128
+      Handler: com.uaian.aws.lambda.processor.excel.parse.ExcelParseS3TriggerProcessor
+      CodeUri: /Users/kainan/IdeaProjects/codex-java/codex-aws
       Runtime: java11
       Architectures:
         - x86_64

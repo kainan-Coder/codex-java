@@ -1,8 +1,10 @@
 package com.uaian.aws.lambda.processor.excel.parse;
 
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
@@ -23,7 +25,9 @@ import java.util.Map;
 @Slf4j
 public class ExcelParseS3TriggerProcessor implements RequestHandler<Map<String, Object>, String> {
 
-    private final AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
+    private final AmazonS3 s3Client = AmazonS3Client.builder()
+            .withRegion(Regions.US_EAST_2)  // Ensure this is the correct region
+            .build();;
 
     @Override
     public String handleRequest(Map<String, Object> event, Context context) {
@@ -50,17 +54,5 @@ public class ExcelParseS3TriggerProcessor implements RequestHandler<Map<String, 
         } catch (IOException e) {
             return "Error processing " + objectKey + " from bucket " + bucketName + ": " + e.getMessage();
         }
-    }
-
-    private String readS3ObjectContent(S3Object s3Object) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        try (S3ObjectInputStream s3is = s3Object.getObjectContent();
-             BufferedReader reader = new BufferedReader(new InputStreamReader(s3is))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-        }
-        return sb.toString();
     }
 }
